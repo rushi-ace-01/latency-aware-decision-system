@@ -10,8 +10,7 @@ from evaluation.metrics import get_feature_contributions, explain_decision
 
 app = FastAPI(title="Latency-Aware Decision System")
 
-# --- Initialize system once (important) ---
-
+# --- Initialize system once ---
 df = generate_time_series()
 features_df = compute_features(df)
 X, y = prepare_dataset(features_df)
@@ -32,16 +31,17 @@ def make_decision(
     Make a latency-aware decision for a given sample index.
     """
 
-    # Update decision threshold dynamically
-    decision_engine.min_confidence = confidence_threshold
-
     sample_X = X.iloc[[sample_index]]
 
     probability = model.predict_proba(sample_X)[0, 1]
 
     latency_info = latency_sim.simulate()
 
-    decision = decision_engine.decide(probability, latency_info)
+    decision = decision_engine.decide(
+        probability=probability,
+        latency_info=latency_info,
+        confidence_threshold=confidence_threshold,
+    )
 
     feature_contrib = get_feature_contributions(model, sample_X)
     explanation = explain_decision(decision, feature_contrib)
