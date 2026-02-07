@@ -80,5 +80,18 @@ This project consists of two components:
 ```bash
 git clone https://github.com/USERNAME/latency-aware-decision-system.git
 cd latency-aware-decision-system
-
+```
+### 2. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+### 3.Start the backend (FastAPI)
+```bash
+uvicorn api.app:app --reload
+```
+### 4.Start the frontend (Streamlit)
+Open a new terminal and run:
+```bash
+streamlit run experiments/demo_app.py
+```
 
