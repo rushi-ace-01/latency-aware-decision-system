@@ -2,8 +2,11 @@ import streamlit as st
 import requests
 
 # ----------------------------
-# App configuration
+# Configuration
 # ----------------------------
+# LIVE FastAPI backend on Render
+API_URL = "https://latency-aware-decision-system-citadel.onrender.com/decide"
+
 st.set_page_config(
     page_title="Latency-Aware Explainable Decision System",
     layout="centered",
@@ -11,11 +14,11 @@ st.set_page_config(
 
 st.title("Latency-Aware Explainable Decision System")
 st.caption(
-    "A demo of a probabilistic, latency-aware decision system with explainability"
+    "Live demo of a probabilistic decision system with latency constraints and explainability."
 )
 
 # ----------------------------
-# User controls
+# Input Controls
 # ----------------------------
 st.subheader("Input Controls")
 
@@ -38,25 +41,25 @@ confidence_threshold = st.slider(
 run_button = st.button("Run decision")
 
 # ----------------------------
-# API call
+# API Call & Results
 # ----------------------------
 if run_button:
     try:
         response = requests.post(
-            "http://127.0.0.1:8000/decide",
+            API_URL,
             params={
                 "sample_index": sample_index,
                 "confidence_threshold": confidence_threshold,
             },
-            timeout=5,
+            timeout=15,  # Render free tier can be slow on first request
         )
-
+        response.raise_for_status()
         result = response.json()
 
         st.divider()
 
         # ----------------------------
-        # Decision Outcome Section
+        # Decision Outcome
         # ----------------------------
         st.subheader("Decision Outcome")
 
@@ -82,12 +85,12 @@ if run_button:
         col2.metric("Latency (ms)", f"{decision['latency_ms']:.1f}")
 
         # ----------------------------
-        # Explanation Section
+        # Explanation
         # ----------------------------
         st.subheader("Decision Explanation")
         st.info(result["explanation"])
 
-    except Exception as e:
+    except requests.exceptions.RequestException as e:
         st.error("❌ Could not connect to the decision API.")
         st.code(str(e))
 
@@ -96,6 +99,6 @@ if run_button:
 # ----------------------------
 st.divider()
 st.caption(
-    "This demo focuses on system design, latency constraints, and explainability — "
-    "not domain-specific outcomes."
+    "Backend powered by FastAPI, frontend by Streamlit. "
+    "Designed to demonstrate system design, robustness, and explainability."
 )
