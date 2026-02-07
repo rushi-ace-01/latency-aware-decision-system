@@ -70,6 +70,15 @@ The system follows a modular pipeline:
 - Streamlit (lightweight visualization)
 
 ---
+## Running the Demo Locally
 
-## Repository Structure
+This project consists of two components:
+1. A FastAPI backend (decision engine)
+2. A Streamlit frontend (demo UI)
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/USERNAME/latency-aware-decision-system.git
+cd latency-aware-decision-system
+
 
