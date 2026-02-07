@@ -8,19 +8,18 @@ class DecisionEngine:
 
     def __init__(
         self,
-        min_confidence: float = 0.65,
         latency_budget_ms: float = 20.0,
     ):
-        self.min_confidence = min_confidence
         self.latency_budget_ms = latency_budget_ms
 
     def decide(
         self,
         probability: float,
         latency_info: Dict[str, float],
+        confidence_threshold: float,
     ) -> Dict:
         """
-        Make a decision based on probability and latency.
+        Make a decision based on probability, latency, and dynamic confidence threshold.
         """
 
         decision = {
@@ -30,7 +29,7 @@ class DecisionEngine:
             "latency_ms": latency_info["total"],
         }
 
-        if probability < self.min_confidence:
+        if probability < confidence_threshold:
             decision["reason"] = "probability_below_threshold"
             return decision
 
@@ -41,10 +40,3 @@ class DecisionEngine:
         decision["execute"] = True
         decision["reason"] = "accepted"
         return decision
-
-from core.decision import DecisionEngine
-
-engine = DecisionEngine()
-print(engine.decide(0.9, {"total": 10}))
-print(engine.decide(0.4, {"total": 10}))
-print(engine.decide(0.9, {"total": 30}))
