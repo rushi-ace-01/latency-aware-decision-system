@@ -1,0 +1,11 @@
+system:
+  latency_budget_ms: 20
+  min_confidence: 0.65
+
+model:
+  type: logistic_regression
+
+features:
+  window_size: 20
+  compute_variance: true
+  compute_momentum: true
