@@ -24,10 +24,16 @@ decision_engine = DecisionEngine()
 
 
 @app.post("/decide")
-def make_decision(sample_index: int = 0):
+def make_decision(
+    sample_index: int = 0,
+    confidence_threshold: float = 0.65,
+):
     """
     Make a latency-aware decision for a given sample index.
     """
+
+    # Update decision threshold dynamically
+    decision_engine.min_confidence = confidence_threshold
 
     sample_X = X.iloc[[sample_index]]
 
